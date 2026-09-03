@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -6,6 +7,7 @@ import { ChatService } from '../src/modules/chat/chat.service';
 import { MatchesService } from '../src/modules/matches/matches.service';
 import { PrismaService } from '../src/common/prisma/prisma.service';
 import { RedisService } from '../src/common/redis/redis.service';
+import { TypingService } from '../src/modules/chat/typing.service';
 import configuration from '../src/config/configuration';
 
 describe('ChatService - Critical Flow', () => {
@@ -23,7 +25,7 @@ describe('ChatService - Critical Flow', () => {
         }),
         JwtModule.register({}),
       ],
-      providers: [ChatService, MatchesService, PrismaService, RedisService],
+      providers: [ChatService, MatchesService, PrismaService, RedisService, TypingService],
     }).compile();
 
     app = module.createNestApplication();
