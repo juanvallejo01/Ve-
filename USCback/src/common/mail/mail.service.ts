@@ -27,12 +27,32 @@ export class MailService {
   private readonly logger = new Logger(MailService.name);
   private readonly resend: Resend;
 
+  // En desarrollo, si no hay una API key real de Resend configurada (o quedó
+  // el placeholder del .env.example), no se puede enviar correo. En vez de
+  // reventar el login/registro con un 500, se registra el código en consola
+  // para poder continuar el flujo 2FA en local. Nunca se activa en producción.
+  private readonly devLogOnly: boolean;
+
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('resend.apiKey');
-    this.resend = new Resend(apiKey);
+    const nodeEnv = this.configService.get<string>('nodeEnv') || 'development';
+    const hasRealKey = !!apiKey && apiKey.startsWith('re_') && !/REEMPLA|tu-api-key|xxxx/i.test(apiKey);
+    this.devLogOnly = !hasRealKey && nodeEnv !== 'production';
+    this.resend = new Resend(hasRealKey ? apiKey : 're_dev_placeholder');
+
+    if (this.devLogOnly) {
+      this.logger.warn(
+        'RESEND_API_KEY no configurada — modo dev: los códigos se mostrarán en consola, no se enviará correo.',
+      );
+    }
   }
 
   async sendTwoFactorCode(to: string, code: string, userName: string): Promise<void> {
+    if (this.devLogOnly) {
+      this.logger.warn(`[DEV] Código 2FA para ${to} (${userName}): ${code}`);
+      return;
+    }
+
     const { subject, html, text } = twoFactorCodeEmail({ code, userName });
 
     let lastErrorMessage = 'Error desconocido';
@@ -79,6 +99,11 @@ export class MailService {
     throw new Error('No se pudo enviar el correo de verificación');
   }
   async sendPasswordResetCode(to: string, code: string, userName: string): Promise<void> {
+    if (this.devLogOnly) {
+      this.logger.warn(`[DEV] Código de recuperación para ${to} (${userName}): ${code}`);
+      return;
+    }
+
     const { subject, html } = passwordResetEmail({ code, userName });
 
     let lastErrorMessage = 'Error desconocido';

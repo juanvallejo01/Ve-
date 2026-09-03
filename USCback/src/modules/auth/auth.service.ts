@@ -68,6 +68,12 @@ export class AuthService {
 
     const user = result.rows[0];
 
+    // 2FA desactivado (solo dev): se omite el correo y se abre sesión de una
+    // vez. La lógica de OTP sigue intacta, solo no se ejecuta esta rama.
+    if (!this.isTwoFactorEnabled()) {
+      return this.issueSessionDirectly(user);
+    }
+
     // Igual que en login(): la cuenta recién creada no recibe tokens de una
     // vez — se dispara el 2FA justo aquí, una sola vez, para confirmar el
     // correo antes de abrir la primera sesión.
@@ -195,6 +201,12 @@ export class AuthService {
       };
     }
 
+    // 2FA desactivado (solo dev): se omite el segundo factor y se emiten los
+    // tokens directamente. La lógica de OTP queda intacta para reactivarla.
+    if (!this.isTwoFactorEnabled()) {
+      return this.issueSessionDirectly(user);
+    }
+
     // Cuenta todavía sin verificar (recién creada, o quedó a medias): se
     // dispara el segundo factor. Los tokens de sesión solo se emiten en
     // verifyOtp(), una vez el usuario confirma el código.
@@ -204,6 +216,45 @@ export class AuthService {
       requiresTwoFactor: true,
       email: user.email,
       message: 'Hemos enviado un código de verificación a tu correo.',
+    };
+  }
+
+  /**
+   * ¿Está activo el 2FA por correo? Controlado por AUTH_2FA_ENABLED; siempre
+   * activo en producción. Ver config/configuration.ts.
+   */
+  private isTwoFactorEnabled(): boolean {
+    return this.configService.get<boolean>('auth.twoFactorEnabled') !== false;
+  }
+
+  /**
+   * Abre sesión sin pasar por el 2FA (cuenta recién creada o login de cuenta
+   * sin verificar, cuando AUTH_2FA_ENABLED=false). Marca el correo como
+   * verificado para que el resto del sistema trate la cuenta como normal.
+   */
+  private async issueSessionDirectly(user: any) {
+    if (!user.emailVerifiedAt) {
+      await this.postgres.query(
+        'UPDATE users SET "emailVerifiedAt" = NOW() WHERE id = $1',
+        [user.id],
+      );
+    }
+
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        nickname: user.nickname ?? null,
+        major: user.major,
+        role: user.role,
+        photoUrl: user.photoUrl ?? null,
+        bio: user.bio ?? null,
+        bannerUrl: user.bannerUrl ?? null,
+      },
+      ...tokens,
     };
   }
 
