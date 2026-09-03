@@ -1,0 +1,499 @@
+{
+  "landing": {
+    "nav": {
+      "signIn": "Iniciar sesión"
+    },
+    "hero": {
+      "badge": "🎓 Exclusivo para universitarios de Cali",
+      "title": "La red social exclusiva para universitarios de Cali.",
+      "subtitle": "Conecta, descubre y comparte con estudiantes de tu universidad en un entorno seguro y verificado.",
+      "signIn": "Iniciar sesión",
+      "createAccount": "Crear cuenta"
+    },
+    "benefits": {
+      "kicker": "Beneficios",
+      "title": "Hecha para tu vida universitaria",
+      "items": {
+        "onlyStudents": {
+          "title": "Solo universitarios",
+          "description": "Accede únicamente con una cuenta universitaria para formar parte de una comunidad auténtica."
+        },
+        "connect": {
+          "title": "Conecta fácilmente",
+          "description": "Encuentra personas con intereses similares, haz amistades y amplía tu círculo universitario."
+        },
+        "discover": {
+          "title": "Descubre oportunidades",
+          "description": "Comparte publicaciones, conoce eventos, actividades y conecta con estudiantes de otras universidades."
+        }
+      }
+    },
+    "howItWorks": {
+      "kicker": "Proceso",
+      "title": "¿Cómo funciona?",
+      "steps": {
+        "create": "Crea tu cuenta",
+        "verify": "Verifica que perteneces a una universidad",
+        "start": "Comienza a conectar con otros estudiantes"
+      }
+    },
+    "faq": {
+      "kicker": "Dudas",
+      "title": "Preguntas frecuentes",
+      "items": {
+        "who": {
+          "question": "¿Quién puede registrarse?",
+          "answer": "Solo estudiantes universitarios."
+        },
+        "privacy": {
+          "question": "¿Mis datos son privados?",
+          "answer": "Sí, protegemos tu información y solo compartimos lo necesario para el funcionamiento de la plataforma."
+        },
+        "otherUniversities": {
+          "question": "¿Puedo conocer estudiantes de otras universidades?",
+          "answer": "Sí, siempre que pertenezcan a universidades participantes en Cali."
+        }
+      }
+    },
+    "footer": {
+      "tagline": "La comunidad universitaria de Cali.",
+      "terms": "Términos y condiciones",
+      "privacy": "Política de privacidad",
+      "contact": "Contacto",
+      "rights": "Todos los derechos reservados."
+    }
+  },
+  "time": {
+    "justNow": "Ahora mismo",
+    "minutesAgo": "hace {count}m",
+    "hoursAgo": "hace {count}h",
+    "yesterday": "Ayer",
+    "daysAgo": "hace {count}d"
+  },
+  "nav": {
+    "ariaLabel": "Navegación principal",
+    "home": "Inicio",
+    "discover": "Descubrir",
+    "messages": "Mensajes",
+    "ranking": "Ranking",
+    "profile": "Perfil"
+  },
+  "auth": {
+    "joinTitle": "Únete a Campus Circle",
+    "welcomeBackTitle": "Bienvenido de nuevo",
+    "joinSubtitle": "Crea tu cuenta para empezar",
+    "welcomeBackSubtitle": "Inicia sesión en tu comunidad universitaria",
+    "fullName": "Nombre completo",
+    "fullNamePlaceholder": "Juan Pérez",
+    "nickname": "Apodo",
+    "nicknamePlaceholder": "¿Cómo te dicen? (opcional)",
+    "faculty": "Facultad",
+    "facultyPlaceholder": "Selecciona tu facultad",
+    "useTestAccount": "Usar cuenta de prueba (student1@usc.edu)",
+    "fill": "Rellenar",
+    "email": "Correo",
+    "emailPlaceholder": "tunombre@univalle.edu.co",
+    "password": "Contraseña",
+    "passwordPlaceholderRegister": "Mínimo 6 caracteres",
+    "passwordPlaceholderLogin": "Ingresa tu contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "major": "Carrera",
+    "majorPlaceholder": "Selecciona tu carrera",
+    "loading": "Cargando...",
+    "createAccount": "Crear cuenta",
+    "signIn": "Iniciar sesión",
+    "or": "o",
+    "toggleToSignIn": "¿Ya tienes cuenta? Inicia sesión",
+    "termsNotice": "Al continuar, aceptas nuestros Términos de Servicio",
+    "otp": {
+      "title": "Verifica tu correo",
+      "subtitleFallback": "Enviamos un código de verificación a {email}",
+      "codeLabel": "Código de verificación",
+      "codePlaceholder": "123456",
+      "verifyButton": "Verificar código",
+      "verifying": "Verificando...",
+      "resendButton": "Reenviar código",
+      "resending": "Reenviando...",
+      "resendSuccess": "Enviamos un nuevo código a tu correo",
+      "back": "Volver"
+    },
+    "errors": {
+      "nameRequired": "El nombre es obligatorio",
+      "validEmailRequired": "Se requiere un correo válido",
+      "passwordLength": "La contraseña debe tener al menos 6 caracteres",
+      "majorRequired": "La carrera es obligatoria",
+      "emailDomainNotAllowed": "Debes registrarte con tu correo institucional de una universidad de Cali (por ejemplo, @univalle.edu.co, @icesi.edu.co, @usc.edu.co).",
+      "emailPasswordRequired": "Correo y contraseña son obligatorios",
+      "authFailed": "Error de autenticación",
+      "otpInvalid": "Ingresa el código de 6 dígitos que enviamos a tu correo"
+    }
+  },
+  "feed": {
+    "refreshFeed": "Actualizar inicio",
+    "searchPlaceholder": "Buscar personas por nombre...",
+    "searching": "Buscando...",
+    "noPeopleFound": "No se encontraron personas",
+    "createPost": "Crear publicación",
+    "whatsOnYourMind": "¿Qué estás pensando?",
+    "noPostsYet": "Aún no hay publicaciones",
+    "beFirstToShare": "¡Sé el primero en compartir algo con la comunidad!",
+    "newPost": "Nueva publicación",
+    "posting": "Publicando...",
+    "share": "Compartir",
+    "defaultUser": "Usuario",
+    "defaultMajor": "Estudiante universitario",
+    "writeCaption": "Escribe una descripción...",
+    "takePhoto": "Tomar foto",
+    "gallery": "Galería",
+    "addPhotos": "Agregar fotos",
+    "chooseFromGallery": "Elegir de la galería",
+    "alerts": {
+      "maxImages": "Solo puedes subir hasta 10 imágenes por publicación",
+      "needContentOrImage": "Agrega una imagen o escribe algo para publicar",
+      "createFailed": "No se pudo crear la publicación",
+      "deleteConfirm": "¿Seguro que quieres eliminar esta publicación?",
+      "deleteFailed": "No se pudo eliminar la publicación",
+      "cameraPermissionDenied": "Se requiere acceso a la cámara para tomar una foto.",
+      "galleryPermissionDenied": "Se requiere acceso a la galería para elegir una foto."
+    }
+  },
+  "post": {
+    "deletePost": "Eliminar publicación",
+    "authorWeeklyRank": "Autor: top #{rank} de usuarios esta semana",
+    "postTopLabel": "Publicación top #{rank}",
+    "postWeeklyRankBeyond100": "Publicación fuera del top 100 semanal",
+    "deleteComment": "Eliminar comentario",
+    "share": "Compartir",
+    "shareText": "Mira esta publicación en Ve!",
+    "likes": "{count, plural, one {# me gusta} other {# me gusta}}",
+    "viewAllComments": "Ver los {count} comentarios",
+    "noComments": "Aún no hay comentarios. ¡Sé el primero!",
+    "addComment": "Agregar un comentario...",
+    "post": "Publicar"
+  },
+  "explore": {
+    "title": "Descubrir",
+    "allCaughtUpTitle": "Ya viste a todos",
+    "allCaughtUpSubtitle": "No hay más personas nuevas por ahora. ¡Vuelve más tarde!",
+    "refresh": "Actualizar",
+    "matchBanner": "✨ ¡Es un match! Toca 💬 para escribir",
+    "notifications": "Notificaciones",
+    "unreadCount": "{count} sin leer",
+    "markAllAsRead": "Marcar todo como leído",
+    "noNotificationsYet": "Aún no tienes notificaciones",
+    "notificationsHint": "Cuando recibas likes o matches, aparecerán aquí",
+    "someone": "Alguien",
+    "matchedWithYou": "¡hizo match contigo!",
+    "likedYourProfile": "le dio like a tu perfil",
+    "sendMessage": "Enviar mensaje",
+    "reviewProfile": "Revisar perfil",
+    "itsAMatch": "¡Es un Match!",
+    "likedEachOther": "Tú y {name} se dieron like",
+    "keepSwiping": "Seguir explorando",
+    "you": "Tú"
+  },
+  "swipeCard": {
+    "like": "SÍ",
+    "nope": "NO",
+    "nearby": "Cerca de ti",
+    "weeklyRank": "#{rank}"
+  },
+  "likeReview": {
+    "likedYourProfile": "le dio like a tu perfil",
+    "reject": "Rechazar",
+    "like": "Me gusta"
+  },
+  "matches": {
+    "title": "Matches",
+    "loading": "Cargando...",
+    "matchCount": "{count, plural, one {# match} other {# matches}}",
+    "noMatchesYet": "Aún no tienes matches",
+    "startExploring": "¡Empieza a explorar y dar like a perfiles para encontrar tus matches!",
+    "startChatting": "Iniciar conversación",
+    "newLikes": "Nuevos likes",
+    "itsAMatch": "¡Es un Match!",
+    "likedEachOther": "Tú y {name} se dieron like",
+    "nice": "¡Genial!"
+  },
+  "notificationsPage": {
+    "title": "Notificaciones",
+    "markAllAsRead": "Marcar todo como leído",
+    "noNotificationsYet": "Aún no tienes notificaciones",
+    "hint": "Te avisaremos cuando alguien te dé like o hagas match",
+    "matchedWith": "Hiciste match con {name} 🎉",
+    "someone": "alguien",
+    "likedYourProfile": "le dio like a tu perfil 💛",
+    "matchSubtitle": "¡Inicia una conversación y conócanse!",
+    "likeSubtitle": "Revisa su perfil y decide si también quieres darle like.",
+    "startChat": "Iniciar chat",
+    "reviewProfile": "Revisar perfil",
+    "itsAMatch": "¡Es un Match!",
+    "likedEachOther": "Tú y {name} se dieron like",
+    "nice": "¡Genial!"
+  },
+  "leaderboard": {
+    "title": "Rankings",
+    "subtitle": "Los mejores de esta semana",
+    "topUsers": "Top usuarios",
+    "hotPosts": "Top publicaciones",
+    "leaderboardLabel": "Tabla de posiciones",
+    "trendingPosts": "Publicaciones populares",
+    "likesCount": "{count} me gusta",
+    "bestPost": "Mejor publicación · {count} me gusta",
+    "yourRank": "Tu posición",
+    "resetNotice": "⚡ Los rankings se reinician cada lunes · Basado en likes recibidos",
+    "trendingNotice": "🔥 Las publicaciones más populares de esta semana"
+  },
+  "profile": {
+    "tabs": {
+      "posts": "Publicaciones",
+      "interests": "Intereses",
+      "highlights": "Destacados",
+      "photos": "Fotos"
+    },
+    "interests": {
+      "Photography": "Fotografía",
+      "Design": "Diseño",
+      "Music": "Música",
+      "Hiking": "Senderismo",
+      "Coffee": "Café",
+      "Film": "Cine",
+      "Art": "Arte",
+      "Tech": "Tecnología"
+    },
+    "switchLanguage": "Cambiar idioma",
+    "editBanner": "Cambiar banner",
+    "removeBanner": "Quitar banner",
+    "editProfile": "Editar perfil",
+    "doneEditing": "Listo",
+    "savingProfile": "Guardando...",
+    "defaultUser": "Usuario",
+    "addBio": "Añade una bio…",
+    "defaultMajorLocation": "USC · Cali",
+    "joinedIn": "Unido en 2024",
+    "interestsCount": "intereses",
+    "likesCount": "likes",
+    "photosCount": "fotos",
+    "noPostsYet": "Aún no hay publicaciones",
+    "noPostsHint": "Las publicaciones que compartas aparecerán aquí.",
+    "createFirstPost": "Haz tu primer post",
+    "sharePhotos": "Comparte tus fotos de Descubrir",
+    "sharePhotosHint": "Estas son las fotos que otras personas ven al hacer swipe en Descubrir.",
+    "addFirstPhoto": "Agrega tu primera foto",
+    "noHighlightsYet": "Sin destacados aún",
+    "noHighlightsHint": "Los posts con más likes aparecerán aquí.",
+    "managePhotos": "Gestionar fotos de Descubrir",
+    "myPhotos": "Fotos de Descubrir",
+    "photosExplainer": "📸 Estas fotos son las que ven otras personas cuando aparezcas en Descubrir. La foto PRINCIPAL siempre se muestra primero.",
+    "main": "PRINCIPAL",
+    "weeklyRank": "Top #{rank} esta semana",
+    "editProfilePhoto": "Cambiar foto de perfil",
+    "removeProfilePhoto": "Quitar foto de perfil",
+    "fullName": "Nombre completo",
+    "nickname": "Apodo",
+    "nicknamePlaceholder": "¿Cómo te dicen?",
+    "email": "Correo",
+    "major": "Carrera",
+    "settings": {
+      "title": "Configuración",
+      "language": "Idioma",
+      "blocked": "Bloqueados",
+      "blockedTitle": "Personas bloqueadas",
+      "noBlockedUsers": "No has bloqueado a nadie.",
+      "unblock": "Desbloquear",
+      "unblocking": "Desbloqueando...",
+      "unblockFailed": "No se pudo desbloquear. Intenta de nuevo.",
+      "loadBlockedFailed": "No se pudo cargar la lista de bloqueados.",
+      "personalInfo": "Información personal",
+      "nicknameHint": "El apodo es lo único que ven los demás hasta que hagan match contigo.",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "nicknameSaved": "Apodo actualizado",
+      "nicknameSaveFailed": "No se pudo guardar el apodo. Intenta de nuevo.",
+      "deleteAccount": "Borrar cuenta",
+      "deleteConfirmPrompt": "¿Estás seguro? Esta acción no se puede deshacer.",
+      "deleteConfirmInstructions": "Escribe \"{phrase}\" para confirmar que quieres borrar tu cuenta.",
+      "cancel": "Cancelar",
+      "confirmDelete": "Borrar cuenta",
+      "deleting": "Borrando...",
+      "deleteAccountFailed": "No se pudo borrar la cuenta. Intenta de nuevo."
+    },
+    "alerts": {
+      "photoTooLarge": "La imagen es demasiado pesada (máx. 15MB)",
+      "photosLimitReached": "Ya tienes el máximo de {max} fotos. Elimina una para agregar otra.",
+      "photoUploadFailed": "No se pudo subir la foto. Intenta de nuevo.",
+      "photoRemoveFailed": "No se pudo eliminar la foto. Intenta de nuevo.",
+      "bioSaveFailed": "No se pudo guardar tu bio. Intenta de nuevo."
+    }
+  },
+  "chat": {
+    "goBack": "Volver",
+    "activeNow": "Activo ahora",
+    "notMatchedYet": "Aún no hay match",
+    "matchRequiredTitle": "Necesitas hacer match",
+    "matchRequiredBody": "Necesitas hacer match con {name} para poder chatear. Ambos deben darse like.",
+    "youMatched": "¡Hicieron match! Salúdalo/a: {name} 👋",
+    "matchRequiredBanner": "Necesitas hacer match para chatear",
+    "messagePlaceholder": "Mensaje...",
+    "matchRequiredPlaceholder": "Necesitas hacer match...",
+    "sendMessage": "Enviar mensaje",
+    "viewProfile": "Ver perfil",
+    "ephemeralToggle": "Mensajes que desaparecen en 24h",
+    "ephemeralActiveMine": "Activaste los mensajes de 24h: se borrarán solos.",
+    "ephemeralActiveOther": "La otra persona activó los mensajes de 24h: se borrarán solos.",
+    "typing": "Escribiendo...",
+    "youScreenshotted": "Tomaste una captura de pantalla",
+    "theyScreenshotted": "{name} tomó una captura de pantalla"
+  },
+  "userProfile": {
+    "joined": "Se unió {date}",
+    "posts": "Publicaciones",
+    "likes": "Me gusta",
+    "sendMatch": "Match",
+    "matchPending": "Solicitud enviada",
+    "sendMessage": "Enviar mensaje",
+    "unmatch": "Quitar match",
+    "unmatchConfirm": "¿Quitar el match con {name}? Podrán volver a enviarse una solicitud más adelante.",
+    "block": "Bloquear",
+    "unblock": "Desbloquear",
+    "blockConfirm": "¿Bloquear a {name}? Se eliminará el match si existe y no podrán contactarse.",
+    "blockedByMeNotice": "Bloqueaste a este usuario. Desbloquéalo para volver a interactuar.",
+    "blockedMeNotice": "No puedes interactuar con este perfil.",
+    "report": "Reportar",
+    "reportTitle": "Reportar a {name}",
+    "reportPrompt": "¿Por qué quieres reportar este perfil?",
+    "reportDetailsPlaceholder": "Cuéntanos qué pasó...",
+    "reportDetailsLabelOptional": "Comentario (opcional)",
+    "reportDetailsLabelRequired": "Cuéntanos qué pasó",
+    "reportSubmit": "Enviar reporte",
+    "reportSubmitting": "Enviando...",
+    "reportSubmitted": "Reporte enviado. Nuestro equipo lo revisará.",
+    "reportReasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Acoso",
+      "FAKE_PROFILE": "Perfil falso",
+      "INAPPROPRIATE_CONTENT": "Contenido inapropiado",
+      "OTHER": "Otro"
+    },
+    "verified": "Verificado",
+    "postsTab": "Posts",
+    "activityTab": "Actividad",
+    "noPostsYet": "Aún no hay publicaciones",
+    "recentActivity": "Actividad reciente",
+    "receivedLikes": "Recibió {count} me gusta",
+    "thisWeek": "Esta semana",
+    "postedTimes": "Publicó {count} veces",
+    "total": "Total",
+    "engagement": "Interacción",
+    "avgLikesPerPost": "Promedio de likes por publicación",
+    "weeklyRank": "Top #{rank} esta semana"
+  },
+  "admin": {
+    "tabs": {
+      "overview": "Resumen",
+      "users": "Usuarios",
+      "moderation": "Reportes",
+      "analytics": "Analítica"
+    },
+    "goBack": "Volver",
+    "title": "Panel de administración",
+    "subtitle": "Gestión de Campus Circle",
+    "logout": "Cerrar sesión"
+  },
+  "adminOverview": {
+    "loadingStats": "Cargando estadísticas...",
+    "loadFailed": "No se pudieron cargar las estadísticas",
+    "totalUsers": "Usuarios totales",
+    "activeUsers": "Usuarios activos",
+    "totalLikes": "Likes totales",
+    "totalMatches": "Matches totales",
+    "messages": "Mensajes",
+    "matchRate": "Tasa de match",
+    "recentActivity": "Actividad reciente",
+    "activity": {
+      "newUser": "Nuevo usuario registrado: {name}",
+      "newMatch": "Nuevo match creado: {names}",
+      "newLikes": "{count} nuevos likes hoy",
+      "reachedLikes": "{name} alcanzó {count} likes"
+    }
+  },
+  "adminUsers": {
+    "allUsers": "Todos los usuarios",
+    "userCount": "{count, plural, one {# usuario} other {# usuarios}}",
+    "verify": "Verificar",
+    "suspend": "Suspender",
+    "delete": "Eliminar",
+    "status": {
+      "active": "activo",
+      "suspended": "suspendido",
+      "banned": "baneado"
+    }
+  },
+  "adminModeration": {
+    "reportedContent": "Contenido reportado",
+    "pendingCount": "{count} pendientes",
+    "allClear": "¡Todo en orden! No hay reportes pendientes.",
+    "reportsCount": "{count} reportes",
+    "review": "Revisar",
+    "warnUser": "Advertir usuario",
+    "remove": "Eliminar",
+    "reasons": {
+      "Inappropriate content": "Contenido inapropiado",
+      "Spam": "Spam",
+      "Harassment": "Acoso"
+    }
+  },
+  "adminReports": {
+    "title": "Usuarios reportados",
+    "pendingCount": "{count} pendientes",
+    "allClear": "¡Todo en orden! No hay reportes de usuarios pendientes.",
+    "reportedBy": "Reportado por {name}",
+    "dismiss": "Descartar",
+    "resolve": "Marcar resuelto",
+    "totalReportsCount": "{count} reportes en total contra este usuario",
+    "alreadySuspended": "Ya suspendido",
+    "alreadyBanned": "Ya baneado",
+    "confirmAction": "¿Aplicar \"{action}\" a {name}?",
+    "actions": {
+      "suspend_1w": "Suspender 1 semana",
+      "suspend_1m": "Suspender 1 mes",
+      "ban": "Banear permanentemente"
+    },
+    "reasons": {
+      "SPAM": "Spam",
+      "HARASSMENT": "Acoso",
+      "FAKE_PROFILE": "Perfil falso",
+      "INAPPROPRIATE_CONTENT": "Contenido inapropiado",
+      "OTHER": "Otro"
+    }
+  },
+  "adminAnalytics": {
+    "avgDailyPosts": "Publicaciones diarias (prom.)",
+    "avgDailySparks": "Interacciones diarias (prom.)",
+    "engagementRate": "Tasa de interacción",
+    "retention": "Retención (7d)",
+    "vsLastWeek": "{sign}{percent}% vs semana pasada",
+    "postsPerDay": "Publicaciones por día",
+    "sparksGrowth": "Crecimiento de interacciones",
+    "usersByMajor": "Usuarios por carrera",
+    "days": {
+      "Mon": "Lun",
+      "Tue": "Mar",
+      "Wed": "Mié",
+      "Thu": "Jue",
+      "Fri": "Vie",
+      "Sat": "Sáb",
+      "Sun": "Dom"
+    },
+    "majors": {
+      "Computer Science": "Ingeniería de Sistemas",
+      "Business Admin": "Administración de Empresas",
+      "Film Production": "Producción Audiovisual",
+      "Engineering": "Ingeniería",
+      "Art & Design": "Arte y Diseño",
+      "Psychology": "Psicología",
+      "Other": "Otra"
+    }
+  }
+}

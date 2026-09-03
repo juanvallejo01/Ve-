@@ -1,0 +1,21 @@
+# OS / editor
+.DS_Store
+
+# Local tooling
+.claude/
+
+# Large binaries (installer that was sitting in the folder)
+*.dmg
+
+# Old web front — intentionally NOT part of this repo
+/USConnect/
+
+# Safety nets — each subproject also carries its own .gitignore
+**/node_modules/
+**/.env
+**/.env.*.local
+**/.next/
+**/dist/
+**/build/
+**/.expo/
+**/*.tsbuildinfo

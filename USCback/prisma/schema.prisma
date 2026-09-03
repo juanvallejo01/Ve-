@@ -1,0 +1,307 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum NotificationType {
+  MATCH
+  LIKE_RECEIVED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  FAKE_PROFILE
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum MessageType {
+  TEXT
+  SCREENSHOT_ALERT
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  nickname  String?
+  email     String   @unique
+  password  String
+  major     String
+  role      UserRole @default(USER)
+  likesCount Int     @default(0)
+  photoUrl  String?
+  photos    String[] @default([])
+  bio       String?
+  bannerUrl String?
+
+  accountStatus  AccountStatus @default(ACTIVE)
+  suspendedUntil DateTime?
+
+  // Se marca la primera (y única) vez que el usuario confirma el código de
+  // 2FA enviado al crear su cuenta. Mientras sea null, login() sigue
+  // exigiendo el código; una vez seteado, los siguientes logins lo omiten.
+  emailVerifiedAt DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  sentLikes     Like[]    @relation("SentLikes")
+  receivedLikes Like[]    @relation("ReceivedLikes")
+  
+  matchesAsUserA Match[] @relation("MatchUserA")
+  matchesAsUserB Match[] @relation("MatchUserB")
+  
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  
+  notifications Notification[]
+  refreshTokens RefreshToken[]
+  
+  posts     Post[]
+  postLikes PostLike[]
+  comments  Comment[]
+
+  blocksSent     Block[] @relation("BlocksSent")
+  blocksReceived Block[] @relation("BlocksReceived")
+
+  reportsSent     Report[] @relation("ReportsSent")
+  reportsReceived Report[] @relation("ReportsReceived")
+
+  twoFactorCodes TwoFactorCode[]
+  passwordResetCodes PasswordResetCode[]
+
+  @@index([likesCount(sort: Desc)])
+  @@index([email])
+  @@map("users")
+}
+
+// Almacena temporalmente el código OTP de 2FA generado tras validar
+// email/contraseña en el login. El código NUNCA se guarda en texto plano
+// (solo su hash bcrypt), expira a los 10 minutos y se invalida tras
+// MAX_OTP_ATTEMPTS intentos fallidos (ver auth.service.ts).
+model TwoFactorCode {
+  id         String    @id @default(uuid())
+  userId     String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("two_factor_codes")
+}
+
+model PasswordResetCode {
+  id         String    @id @default(uuid())
+  userId     String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_codes")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model Like {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentLikes", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedLikes", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@map("likes")
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  userAId   String
+  userBId   String
+  createdAt DateTime @default(now())
+
+  userAEphemeral Boolean @default(false)
+  userBEphemeral Boolean @default(false)
+
+  userA User @relation("MatchUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("MatchUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+  @@index([userAId])
+  @@index([userBId])
+  @@map("matches")
+}
+
+model Message {
+  id         String      @id @default(uuid())
+  senderId   String
+  receiverId String
+  content    String      @db.VarChar(1000)
+  type       MessageType @default(TEXT)
+  read       Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  expiresAt  DateTime?
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId, receiverId, createdAt(sort: Desc)])
+  @@index([receiverId, senderId, createdAt(sort: Desc)])
+  @@index([expiresAt])
+  @@index([receiverId, read])
+  @@map("messages")
+}
+
+model Notification {
+  id          String           @id @default(uuid())
+  userId      String
+  type        NotificationType
+  referenceId String
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model Post {
+  id            String          @id @default(uuid())
+  userId        String
+  content       String
+  imageUrl      String?
+  likesCount    Int             @default(0)
+  commentsCount Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postLikes PostLike[]
+  comments  Comment[]
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@index([likesCount(sort: Desc)])
+  @@map("posts")
+}
+
+model PostLike {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+  @@map("post_likes")
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("BlocksSent", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+  @@map("blocks")
+}
+
+model Report {
+  id         String       @id @default(uuid())
+  reporterId String
+  reportedId String
+  reason     ReportReason
+  details    String?      @db.VarChar(500)
+  status     ReportStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+
+  reporter User @relation("ReportsSent", fields: [reporterId], references: [id], onDelete: Cascade)
+  reported User @relation("ReportsReceived", fields: [reportedId], references: [id], onDelete: Cascade)
+
+  @@index([reportedId])
+  @@index([reporterId])
+  @@index([status])
+  @@map("reports")
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  postId    String
+  userId    String
+  content   String    @db.VarChar(500)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([userId])
+  @@map("comments")
+}
+
+
