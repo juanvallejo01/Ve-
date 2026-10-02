@@ -54,11 +54,4 @@ export class AuthController {
   async logout(@CurrentUser() user: any, @Body() dto: RefreshTokenDto) {
     return this.authService.logout(user.id, dto.refreshToken);
   }
-
-  // Temporary endpoint to create the first admin user
-  // TODO: Remove this after creating the admin account
-  @Post('create-admin')
-  async createAdmin(@Body() dto: RegisterDto) {
-    return this.authService.registerAdmin(dto);
-  }
 }

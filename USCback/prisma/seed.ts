@@ -4,9 +4,20 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+  // El seed BORRA toda la base antes de sembrar: nunca en producción.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('prisma/seed.ts borra todos los datos; no se ejecuta con NODE_ENV=production.');
+  }
   console.log('🌱 Starting database seed...');
 
-  // Clean existing data
+  // Clean existing data (hijos primero para no violar llaves foráneas)
+  await prisma.comment.deleteMany();
+  await prisma.postLike.deleteMany();
+  await prisma.post.deleteMany();
+  await prisma.report.deleteMany();
+  await prisma.block.deleteMany();
+  await prisma.twoFactorCode.deleteMany();
+  await prisma.passwordResetCode.deleteMany();
   await prisma.notification.deleteMany();
   await prisma.message.deleteMany();
   await prisma.match.deleteMany();

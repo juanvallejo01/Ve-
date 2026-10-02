@@ -2,7 +2,7 @@
  * Registration is restricted to students of Cali universities — USConnect's
  * actual target audience. This only gates NEW sign-ups (`AuthService.register`);
  * it must never be applied to `login`/`verifyOtp`, since accounts created
- * before this restriction existed (or via `registerAdmin`) still need to be
+ * before this restriction existed still need to be
  * able to sign in regardless of their email's domain.
  */
 export const ALLOWED_EMAIL_DOMAINS = [

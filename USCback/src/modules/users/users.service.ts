@@ -190,12 +190,35 @@ export class UsersService {
     });
   }
 
+  /**
+   * Elimina la cuenta de forma definitiva (requisito de App Store 5.1.1(v),
+   * Google Play y la Ley 1581 de habeas data). Todas las relaciones del
+   * usuario (posts, likes, matches, mensajes, tokens…) tienen
+   * `onDelete: Cascade`, así que se borran con él. Antes se descuentan los
+   * likes que dio, para que el ranking de los demás siga cuadrando.
+   */
   async deleteAccount(userId: string) {
-    // Soft delete
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { deletedAt: new Date() },
-    });
+    await this.prisma.$transaction([
+      // Likes de perfil que dio → restar al receptor.
+      this.prisma.$executeRaw`
+        UPDATE users u SET "likesCount" = GREATEST(u."likesCount" - l.n, 0)
+        FROM (SELECT "receiverId" AS id, COUNT(*)::int AS n FROM likes
+              WHERE "senderId" = ${userId} GROUP BY "receiverId") l
+        WHERE u.id = l.id`,
+      // Likes a posts ajenos que dio → restar al post y a su autor.
+      this.prisma.$executeRaw`
+        UPDATE posts p SET "likesCount" = GREATEST(p."likesCount" - 1, 0)
+        FROM post_likes pl
+        WHERE pl."postId" = p.id AND pl."userId" = ${userId} AND p."userId" <> ${userId}`,
+      this.prisma.$executeRaw`
+        UPDATE users u SET "likesCount" = GREATEST(u."likesCount" - a.n, 0)
+        FROM (SELECT p."userId" AS id, COUNT(*)::int AS n FROM post_likes pl
+              JOIN posts p ON p.id = pl."postId"
+              WHERE pl."userId" = ${userId} AND p."userId" <> ${userId}
+              GROUP BY p."userId") a
+        WHERE u.id = a.id`,
+      this.prisma.user.delete({ where: { id: userId } }),
+    ]);
 
     return { message: 'Account deleted successfully' };
   }

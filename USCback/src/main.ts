@@ -19,8 +19,14 @@ async function bootstrap() {
   app.use(helmet());
 
   // CORS
+  // CORS_ORIGIN admite varios orígenes separados por coma
+  // (p. ej. la landing en 3000 y la app Expo web en 8081).
   app.enableCors({
-    origin: configService.get<string>('cors.origin'),
+    origin: configService
+      .get<string>('cors.origin')
+      ?.split(',')
+      .map((o) => o.trim())
+      .filter(Boolean),
     credentials: true,
   });
 

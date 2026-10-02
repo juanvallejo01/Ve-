@@ -86,48 +86,6 @@ export class AuthService {
     };
   }
 
-  // TODO: Remove this after creating admin account - temporary endpoint
-  async registerAdmin(dto: RegisterDto) {
-    // Check if user already exists
-    const existingResult = await this.postgres.query(
-      'SELECT id FROM users WHERE email = $1 AND "deletedAt" IS NULL LIMIT 1',
-      [dto.email],
-    );
-
-    if (existingResult.rows.length > 0) {
-      throw new ConflictException('Email already registered');
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-
-    // Create admin user
-    const result = await this.postgres.query(
-      `INSERT INTO users (id, name, email, password, major, role, "likesCount", "createdAt", "updatedAt")
-       VALUES (gen_random_uuid()::TEXT, $1, $2, $3, $4, 'ADMIN', 0, NOW(), NOW())
-       RETURNING id, name, email, major, role, "likesCount", "photoUrl", "createdAt", "updatedAt"`,
-      [dto.name, dto.email, hashedPassword, dto.major || 'Administration'],
-    );
-
-    const user = result.rows[0];
-
-    // Generate tokens
-    const tokens = await this.generateTokens(user.id, user.email, user.role);
-
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        major: user.major,
-        role: user.role,
-        photoUrl: user.photoUrl,
-        createdAt: user.createdAt,
-      },
-      ...tokens,
-    };
-  }
-
   async login(dto: LoginDto) {
     // Find user using direct PostgreSQL
     const result = await this.postgres.query(
@@ -229,17 +187,12 @@ export class AuthService {
 
   /**
    * Abre sesión sin pasar por el 2FA (cuenta recién creada o login de cuenta
-   * sin verificar, cuando AUTH_2FA_ENABLED=false). Marca el correo como
-   * verificado para que el resto del sistema trate la cuenta como normal.
+   * sin verificar, cuando AUTH_2FA_ENABLED=false). NO marca el correo como
+   * verificado: sin código confirmado, `emailVerifiedAt` queda en null
+   * (verificación pendiente) y, al reactivar el 2FA, el siguiente login de
+   * esa cuenta exigirá el código. Solo verifyOtp() lo establece.
    */
   private async issueSessionDirectly(user: any) {
-    if (!user.emailVerifiedAt) {
-      await this.postgres.query(
-        'UPDATE users SET "emailVerifiedAt" = NOW() WHERE id = $1',
-        [user.id],
-      );
-    }
-
     const tokens = await this.generateTokens(user.id, user.email, user.role);
 
     return {

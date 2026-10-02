@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+
+// Política de contraseñas (igual en la app: uscConnet/src/lib/password-policy.ts):
+// mínimo 8 caracteres, al menos una mayúscula y un carácter especial.
+const PASSWORD_MESSAGE =
+  'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un carácter especial.';
+const PASSWORD_PATTERN = /^(?=.*[A-ZÁÉÍÓÚÑ])(?=.*[^A-Za-z0-9ÁÉÍÓÚÑáéíóúñ\s]).{8,}$/;
 
 export class RegisterDto {
   @IsString()
@@ -13,7 +19,8 @@ export class RegisterDto {
   email!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(8, { message: PASSWORD_MESSAGE })
+  @Matches(PASSWORD_PATTERN, { message: PASSWORD_MESSAGE })
   password!: string;
 
   @IsString()
@@ -59,6 +66,7 @@ export class ResetPasswordDto {
   code!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(8, { message: PASSWORD_MESSAGE })
+  @Matches(PASSWORD_PATTERN, { message: PASSWORD_MESSAGE })
   newPassword!: string;
 }
