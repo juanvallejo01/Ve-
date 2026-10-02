@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "uscConnet",
+    "name": "Ve!",
     "slug": "uscConnet",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,17 +8,24 @@
     "scheme": "uscconnet",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.juanvallejo01.uscConnet"
+      "bundleIdentifier": "com.juanvallejo01.uscConnet",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0A0A0C",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.juanvallejo01.uscconnet",
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -29,24 +36,27 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#0A0A0C",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 200
         }
       ],
       "expo-secure-store",
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Ve! to access your photos to add them to a post.",
-          "cameraPermission": "Allow Ve! to access your camera to take a photo for a post.",
+          "photosPermission": "Ve! necesita acceso a tus fotos para que puedas elegir tu foto de perfil, tu portada o la imagen de una publicación.",
+          "cameraPermission": "Ve! necesita acceso a la cámara para que puedas tomar tu foto de perfil o la imagen de una publicación.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-image",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
-    }
+    },
+    "description": "La red social exclusiva para universitarios de Cali."
   }
 }

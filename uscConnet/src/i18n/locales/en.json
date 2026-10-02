@@ -94,7 +94,7 @@
     "email": "Email",
     "emailPlaceholder": "yourname@univalle.edu.co",
     "password": "Password",
-    "passwordPlaceholderRegister": "At least 6 characters",
+    "passwordPlaceholderRegister": "At least 8 characters",
     "passwordPlaceholderLogin": "Enter your password",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
@@ -105,7 +105,15 @@
     "signIn": "Sign In",
     "or": "or",
     "toggleToSignIn": "Already have an account? Sign In",
-    "termsNotice": "By continuing, you agree to our Terms of Service",
+    "termsNoticePrefix": "By continuing, you agree to our",
+    "termsLink": "Terms and Conditions",
+    "termsNoticeAnd": "and",
+    "privacyLink": "Privacy Policy",
+    "passwordRules": {
+      "minLength": "At least 8 characters",
+      "uppercase": "One uppercase letter",
+      "special": "One special character (e.g. ! @ # $ %)"
+    },
     "otp": {
       "title": "Verify your email",
       "subtitleFallback": "We sent a verification code to {email}",
@@ -121,12 +129,25 @@
     "errors": {
       "nameRequired": "Name is required",
       "validEmailRequired": "Valid email is required",
-      "passwordLength": "Password must be at least 6 characters",
+      "passwordPolicy": "Password must have at least 8 characters, one uppercase letter and one special character.",
       "majorRequired": "Major is required",
       "emailDomainNotAllowed": "You must register with your institutional email from a Cali university (e.g. @univalle.edu.co, @icesi.edu.co, @usc.edu.co).",
       "emailPasswordRequired": "Email and password are required",
       "authFailed": "Authentication failed",
       "otpInvalid": "Enter the 6-digit code we sent to your email"
+    },
+    "institutionalEmail": {
+      "label": "Institutional email",
+      "placeholder": "student@university.edu.co",
+      "hint": "Use the institutional email provided by your university.",
+      "continue": "Continue",
+      "emailStepSubtitle": "Start with your institutional email",
+      "profileStepSubtitle": "Complete your profile to finish",
+      "stepLabel": "Step {current} of {total}",
+      "checkingTitle": "Checking institutional email",
+      "checkingSubtitle": "We're confirming that this email belongs to a university.",
+      "registeredTitle": "Institutional email registered",
+      "registeredBody": "Your institutional email has been registered successfully."
     }
   },
   "feed": {
@@ -311,6 +332,8 @@
       "saving": "Saving...",
       "nicknameSaved": "Nickname updated",
       "nicknameSaveFailed": "Couldn't save your nickname. Please try again.",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
       "deleteAccount": "Delete account",
       "deleteConfirmPrompt": "Are you sure? This action cannot be undone.",
       "deleteConfirmInstructions": "Type \"{phrase}\" to confirm you want to delete your account.",

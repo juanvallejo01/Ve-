@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { Platform } from 'react-native';
 
 import { API_CONFIG, ENDPOINTS } from './api-config';
 
@@ -32,6 +33,17 @@ const api = axios.create({
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
+// expo-secure-store no tiene implementación en web (sus métodos no existen),
+// así que en web se usa localStorage, igual que la versión web original.
+const tokenStore =
+  Platform.OS === 'web'
+    ? {
+        getItemAsync: async (key: string) => globalThis.localStorage?.getItem(key) ?? null,
+        setItemAsync: async (key: string, value: string) => globalThis.localStorage?.setItem(key, value),
+        deleteItemAsync: async (key: string) => globalThis.localStorage?.removeItem(key),
+      }
+    : SecureStore;
+
 let accessTokenCache: string | null | undefined;
 let refreshTokenCache: string | null | undefined;
 
@@ -48,8 +60,8 @@ function ensureHydrated(): Promise<void> {
   if (!hydrationPromise) {
     hydrationPromise = (async () => {
       const [access, refresh] = await Promise.all([
-        SecureStore.getItemAsync(ACCESS_TOKEN_KEY),
-        SecureStore.getItemAsync(REFRESH_TOKEN_KEY),
+        tokenStore.getItemAsync(ACCESS_TOKEN_KEY),
+        tokenStore.getItemAsync(REFRESH_TOKEN_KEY),
       ]);
       accessTokenCache = access;
       refreshTokenCache = refresh;
@@ -63,8 +75,8 @@ export async function setTokens(access: string, refresh: string): Promise<void> 
   refreshTokenCache = refresh;
 
   await Promise.all([
-    SecureStore.setItemAsync(ACCESS_TOKEN_KEY, access),
-    SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refresh),
+    tokenStore.setItemAsync(ACCESS_TOKEN_KEY, access),
+    tokenStore.setItemAsync(REFRESH_TOKEN_KEY, refresh),
   ]);
 }
 
@@ -83,8 +95,8 @@ export async function clearTokens(): Promise<void> {
   refreshTokenCache = null;
 
   await Promise.all([
-    SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY),
-    SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
+    tokenStore.deleteItemAsync(ACCESS_TOKEN_KEY),
+    tokenStore.deleteItemAsync(REFRESH_TOKEN_KEY),
   ]);
 }
 

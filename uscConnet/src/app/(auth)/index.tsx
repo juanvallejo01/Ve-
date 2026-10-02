@@ -1,5 +1,5 @@
-import { Eye, EyeOff, AlertCircle } from 'lucide-react-native';
-import { useRef, useState, type ReactNode } from 'react';
+import { Eye, EyeOff, AlertCircle, Check, Circle, Mail } from 'lucide-react-native';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
@@ -12,15 +12,27 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, {
+  FadeInDown,
+  LinearTransition,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
+import { EmailCheckingView } from '@/components/auth/email-checking-view';
+import { EmailRegisteredView } from '@/components/auth/email-registered-view';
 import { OtpInput } from '@/components/auth/otp-input';
 import { PickerSheetField } from '@/components/auth/picker-sheet-field';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
 import { useTheme } from '@/context/theme-context';
 import { FACULTIES, FACULTY_NAMES } from '@/constants/faculties';
-import { isAllowedEmailDomain } from '@/constants/allowed-email-domains';
+import { openLegalPage } from '@/constants/legal';
+import { useEmailVerificationFlow } from '@/hooks/use-email-verification-flow';
+import { isValidEmailFormat } from '@/lib/email-verification';
+import { isPasswordValid, PASSWORD_RULES } from '@/lib/password-policy';
 import type { LoginResponse } from '@/types';
 
 type Step = 'credentials' | 'otp';
@@ -58,6 +70,11 @@ export default function AuthScreen() {
   const [otpMessage, setOtpMessage] = useState('');
   const [isResending, setIsResending] = useState(false);
 
+  // Registro en dos pasos: primero el correo institucional (ver
+  // useEmailVerificationFlow), y con status 'continue' el resto del perfil.
+  const emailFlow = useEmailVerificationFlow();
+  const isEmailStep = isRegistering && step === 'credentials' && emailFlow.status !== 'continue';
+
   const shakeX = useSharedValue(0);
   const shakeStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeX.value }],
@@ -76,6 +93,22 @@ export default function AuthScreen() {
   function showError(message: string) {
     setError(message);
     triggerShake();
+  }
+
+  async function handleEmailContinue() {
+    setError('');
+    if (!isValidEmailFormat(email)) {
+      showError(t('errors.validEmailRequired'));
+      return;
+    }
+    // Si el dominio no es institucional, el flujo vuelve a `email_input` y se
+    // muestra el motivo con el mismo banner de error del formulario.
+    const result = await emailFlow.submit(email);
+    if (result && !result.ok) {
+      showError(
+        result.reason === 'domain_not_allowed' ? t('errors.emailDomainNotAllowed') : t('errors.validEmailRequired')
+      );
+    }
   }
 
   // Tanto login como register (cuenta recién creada) pasan por el mismo
@@ -100,18 +133,8 @@ export default function AuthScreen() {
           setIsLoading(false);
           return;
         }
-        if (!email.trim() || !email.includes('@')) {
-          showError(t('errors.validEmailRequired'));
-          setIsLoading(false);
-          return;
-        }
-        if (!isAllowedEmailDomain(email)) {
-          showError(t('errors.emailDomainNotAllowed'));
-          setIsLoading(false);
-          return;
-        }
-        if (!password || password.length < 6) {
-          showError(t('errors.passwordLength'));
+        if (!isPasswordValid(password)) {
+          showError(t('errors.passwordPolicy'));
           setIsLoading(false);
           return;
         }
@@ -124,7 +147,8 @@ export default function AuthScreen() {
         const response = await register({
           name: name.trim(),
           nickname: nickname.trim() || undefined,
-          email: email.trim().toLowerCase(),
+          // Correo ya normalizado y validado en el paso institucional.
+          email: emailFlow.email,
           password,
           major: major.trim(),
         });
@@ -202,6 +226,7 @@ export default function AuthScreen() {
     setNickname('');
     setFaculty('');
     setMajor('');
+    emailFlow.reset();
   }
 
   return (
@@ -233,16 +258,21 @@ export default function AuthScreen() {
                   {step === 'otp'
                     ? otpMessage || t('otp.subtitleFallback', { email: otpEmail })
                     : isRegistering
-                      ? t('joinSubtitle')
+                      ? isEmailStep
+                        ? t('institutionalEmail.emailStepSubtitle')
+                        : t('institutionalEmail.profileStepSubtitle')
                       : t('welcomeBackSubtitle')}
                 </Text>
               </View>
+              {isRegistering && step === 'credentials' ? (
+                <StepIndicator current={isEmailStep ? 1 : 2} total={2} label={t('institutionalEmail.stepLabel', { current: isEmailStep ? 1 : 2, total: 2 })} />
+              ) : null}
             </View>
 
             {/* Form card */}
-            <Animated.View style={[styles.card, shakeStyle]}>
+            <Animated.View layout={LinearTransition.duration(260)} style={[styles.card, shakeStyle]}>
               <View style={styles.cardInner}>
-                {error ? (
+                {error && (!isEmailStep || emailFlow.status === 'email_input') ? (
                   <View style={styles.errorBanner}>
                     <AlertCircle size={16} color="#FF3B30" />
                     <Text style={[styles.errorText, { fontFamily: fonts.sans.regular }]}>{error}</Text>
@@ -297,8 +327,64 @@ export default function AuthScreen() {
                       </Pressable>
                     </View>
                   </>
+                ) : isEmailStep ? (
+                  <Animated.View key={emailFlow.status} entering={FadeInDown.duration(300)}>
+                    {emailFlow.status === 'checking' ? (
+                      <EmailCheckingView email={emailFlow.email} />
+                    ) : emailFlow.status === 'registered' ? (
+                      <EmailRegisteredView email={emailFlow.email} onContinue={emailFlow.proceed} />
+                    ) : (
+                      // 'email_input'. Los estados futuros code_sent / otp_input /
+                      // verified se renderizarán aquí cuando exista el proveedor.
+                      <View style={styles.cardInner}>
+                        <FieldInput
+                          label={t('institutionalEmail.label')}
+                          placeholder={t('institutionalEmail.placeholder')}
+                          hint={t('institutionalEmail.hint')}
+                          leftIcon={<Mail size={18} color="#C7C7CC" />}
+                          value={email}
+                          onChangeText={setEmail}
+                          keyboardType="email-address"
+                          autoCapitalize="none"
+                          onSubmitEditing={handleEmailContinue}
+                        />
+
+                        <Button
+                          fullWidth
+                          size="lg"
+                          onPress={handleEmailContinue}
+                          gradientColors={['#fbbf24', '#f59e0b']}
+                          textColor="#0A0A0C"
+                          style={styles.submitButton}
+                        >
+                          {t('institutionalEmail.continue')}
+                        </Button>
+
+                        <View style={styles.dividerRow}>
+                          <View style={styles.dividerLine} />
+                          <Text style={[styles.dividerText, { fontFamily: fonts.sans.medium }]}>{t('or')}</Text>
+                          <View style={styles.dividerLine} />
+                        </View>
+
+                        <Button
+                          variant="outline"
+                          fullWidth
+                          size="lg"
+                          onPress={toggleMode}
+                          textColor="#1A1A2E"
+                          style={styles.outlineButton}
+                        >
+                          {t('toggleToSignIn')}
+                        </Button>
+                      </View>
+                    )}
+                  </Animated.View>
                 ) : (
-                  <>
+                  <Animated.View entering={isRegistering ? FadeInDown.duration(300) : undefined} style={styles.cardInner}>
+                    {isRegistering ? (
+                      <LockedEmailRow email={emailFlow.email} />
+                    ) : null}
+
                     {isRegistering ? (
                       <FieldInput
                         label={t('fullName')}
@@ -317,14 +403,16 @@ export default function AuthScreen() {
                       />
                     ) : null}
 
-                    <FieldInput
-                      label={t('email')}
-                      placeholder={t('emailPlaceholder')}
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                    />
+                    {!isRegistering ? (
+                      <FieldInput
+                        label={t('email')}
+                        placeholder={t('emailPlaceholder')}
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                      />
+                    ) : null}
 
                     <FieldInput
                       label={t('password')}
@@ -348,6 +436,8 @@ export default function AuthScreen() {
                         </Pressable>
                       }
                     />
+
+                    {isRegistering ? <PasswordChecklist password={password} /> : null}
 
                     {isRegistering ? (
                       <PickerSheetField
@@ -402,12 +492,21 @@ export default function AuthScreen() {
                     >
                       {isRegistering ? t('toggleToSignIn') : t('createAccount')}
                     </Button>
-                  </>
+                  </Animated.View>
                 )}
               </View>
             </Animated.View>
 
-            <Text style={[styles.termsText, { fontFamily: fonts.sans.regular }]}>{t('termsNotice')}</Text>
+            <Text style={[styles.termsText, { fontFamily: fonts.sans.regular }]}>
+              {t('termsNoticePrefix')}{' '}
+              <Text style={styles.termsLink} onPress={() => openLegalPage('terms')} accessibilityRole="link">
+                {t('termsLink')}
+              </Text>{' '}
+              {t('termsNoticeAnd')}{' '}
+              <Text style={styles.termsLink} onPress={() => openLegalPage('privacy')} accessibilityRole="link">
+                {t('privacyLink')}
+              </Text>
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -425,6 +524,9 @@ interface FieldInputProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   onSubmitEditing?: () => void;
   rightElement?: ReactNode;
+  leftIcon?: ReactNode;
+  /** Texto de ayuda pequeño bajo el campo. */
+  hint?: string;
 }
 
 /** Local stand-in for the web version's repeated `<input>` markup. */
@@ -438,6 +540,8 @@ function FieldInput({
   autoCapitalize = 'sentences',
   onSubmitEditing,
   rightElement,
+  leftIcon,
+  hint,
 }: FieldInputProps) {
   const { fonts } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
@@ -450,8 +554,10 @@ function FieldInput({
           styles.inputRow,
           isFocused && styles.inputRowFocused,
           rightElement ? { paddingRight: 12 } : null,
+          leftIcon ? { paddingLeft: 16, gap: 10 } : null,
         ]}
       >
+        {leftIcon}
         <TextInput
           value={value}
           onChangeText={onChangeText}
@@ -467,6 +573,61 @@ function FieldInput({
         />
         {rightElement}
       </View>
+      {hint ? <Text style={[styles.hint, { fontFamily: fonts.sans.regular }]}>{hint}</Text> : null}
+    </View>
+  );
+}
+
+/** Requisitos de la contraseña, que se marcan en vivo mientras se escribe. */
+function PasswordChecklist({ password }: { password: string }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'auth.passwordRules' });
+  const { fonts } = useTheme();
+  return (
+    <View style={styles.checklist}>
+      {PASSWORD_RULES.map((rule) => {
+        const ok = rule.test(password);
+        return (
+          <View key={rule.id} style={styles.checklistRow}>
+            {ok ? <Check size={14} color="#34C759" strokeWidth={3} /> : <Circle size={14} color="#C7C7CC" />}
+            <Text style={[styles.checklistText, { fontFamily: fonts.sans.medium }, ok && styles.checklistTextOk]}>
+              {t(rule.id)}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+function StepIndicator({ current, total, label }: { current: number; total: number; label: string }) {
+  return (
+    <View style={styles.stepIndicator} accessible accessibilityLabel={label}>
+      {Array.from({ length: total }, (_, i) => (
+        <Animated.View
+          key={i}
+          layout={LinearTransition.duration(260)}
+          style={[styles.stepDot, i + 1 === current && styles.stepDotActive, i + 1 < current && styles.stepDotDone]}
+        />
+      ))}
+    </View>
+  );
+}
+
+/**
+ * Correo ya verificado en el paso 1. Es de solo lectura: una vez pasada la
+ * verificación no se puede cambiar (para usar otro correo hay que reiniciar
+ * el registro volviendo a "Iniciar sesión").
+ */
+function LockedEmailRow({ email }: { email: string }) {
+  const { fonts } = useTheme();
+  return (
+    <View style={styles.lockedRow}>
+      <View style={styles.lockedIcon}>
+        <Mail size={16} color="#d97706" />
+      </View>
+      <Text style={[styles.lockedEmail, styles.flex, { fontFamily: fonts.sans.semiBold }]} numberOfLines={1}>
+        {email}
+      </Text>
     </View>
   );
 }
@@ -550,6 +711,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   input: { flex: 1, paddingVertical: 14, fontSize: 14, color: '#1A1A2E' },
+  hint: { fontSize: 12, lineHeight: 16, color: '#8E8E93', paddingLeft: 4 },
+
+  checklist: { gap: 6, paddingLeft: 4, marginTop: -8 },
+  checklistRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  checklistText: { fontSize: 12, color: '#8E8E93' },
+  checklistTextOk: { color: '#1A1A2E' },
+
+  stepIndicator: { flexDirection: 'row', gap: 6 },
+  stepDot: { height: 6, width: 6, borderRadius: 3, backgroundColor: '#EBEBF0' },
+  stepDotActive: { width: 22, backgroundColor: '#fbbf24' },
+  stepDotDone: { backgroundColor: '#1A1A2E' },
+
+  lockedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#EBEBF0',
+    backgroundColor: '#F8F8FA',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  lockedIcon: {
+    height: 32,
+    width: 32,
+    borderRadius: 10,
+    backgroundColor: 'rgba(251,191,36,0.14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockedEmail: { fontSize: 14, color: '#1A1A2E' },
 
   submitButton: { marginTop: 4, shadowColor: '#fbbf24', shadowOpacity: 0.3, shadowRadius: 20, shadowOffset: { width: 0, height: 8 } },
   outlineButton: { borderColor: '#EBEBF0', backgroundColor: '#FFFFFF' },
@@ -563,5 +756,6 @@ const styles = StyleSheet.create({
   otpActionsDot: { color: '#EBEBF0', fontSize: 14 },
   disabledText: { opacity: 0.5 },
 
-  termsText: { fontSize: 12, color: '#C7C7CC', textAlign: 'center' },
+  termsText: { fontSize: 12, lineHeight: 18, color: '#AEAEB2', textAlign: 'center' },
+  termsLink: { color: '#8E8E93', textDecorationLine: 'underline' },
 });

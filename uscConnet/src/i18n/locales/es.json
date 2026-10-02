@@ -94,7 +94,7 @@
     "email": "Correo",
     "emailPlaceholder": "tunombre@univalle.edu.co",
     "password": "Contraseña",
-    "passwordPlaceholderRegister": "Mínimo 6 caracteres",
+    "passwordPlaceholderRegister": "Mínimo 8 caracteres",
     "passwordPlaceholderLogin": "Ingresa tu contraseña",
     "showPassword": "Mostrar contraseña",
     "hidePassword": "Ocultar contraseña",
@@ -105,7 +105,15 @@
     "signIn": "Iniciar sesión",
     "or": "o",
     "toggleToSignIn": "¿Ya tienes cuenta? Inicia sesión",
-    "termsNotice": "Al continuar, aceptas nuestros Términos de Servicio",
+    "termsNoticePrefix": "Al continuar, aceptas nuestros",
+    "termsLink": "Términos y condiciones",
+    "termsNoticeAnd": "y la",
+    "privacyLink": "Política de privacidad",
+    "passwordRules": {
+      "minLength": "Al menos 8 caracteres",
+      "uppercase": "Una letra mayúscula",
+      "special": "Un carácter especial (por ejemplo ! @ # $ %)"
+    },
     "otp": {
       "title": "Verifica tu correo",
       "subtitleFallback": "Enviamos un código de verificación a {email}",
@@ -121,12 +129,25 @@
     "errors": {
       "nameRequired": "El nombre es obligatorio",
       "validEmailRequired": "Se requiere un correo válido",
-      "passwordLength": "La contraseña debe tener al menos 6 caracteres",
+      "passwordPolicy": "La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un carácter especial.",
       "majorRequired": "La carrera es obligatoria",
       "emailDomainNotAllowed": "Debes registrarte con tu correo institucional de una universidad de Cali (por ejemplo, @univalle.edu.co, @icesi.edu.co, @usc.edu.co).",
       "emailPasswordRequired": "Correo y contraseña son obligatorios",
       "authFailed": "Error de autenticación",
       "otpInvalid": "Ingresa el código de 6 dígitos que enviamos a tu correo"
+    },
+    "institutionalEmail": {
+      "label": "Correo institucional",
+      "placeholder": "estudiante@universidad.edu.co",
+      "hint": "Usa el correo institucional proporcionado por tu universidad.",
+      "continue": "Continuar",
+      "emailStepSubtitle": "Empieza con tu correo institucional",
+      "profileStepSubtitle": "Completa tu perfil para terminar",
+      "stepLabel": "Paso {current} de {total}",
+      "checkingTitle": "Verificando correo institucional",
+      "checkingSubtitle": "Estamos validando que el correo pertenezca a una institución universitaria.",
+      "registeredTitle": "Correo institucional registrado",
+      "registeredBody": "Tu correo institucional ha sido registrado correctamente."
     }
   },
   "feed": {
@@ -311,6 +332,8 @@
       "saving": "Guardando...",
       "nicknameSaved": "Apodo actualizado",
       "nicknameSaveFailed": "No se pudo guardar el apodo. Intenta de nuevo.",
+      "terms": "Términos y condiciones",
+      "privacy": "Política de privacidad",
       "deleteAccount": "Borrar cuenta",
       "deleteConfirmPrompt": "¿Estás seguro? Esta acción no se puede deshacer.",
       "deleteConfirmInstructions": "Escribe \"{phrase}\" para confirmar que quieres borrar tu cuenta.",

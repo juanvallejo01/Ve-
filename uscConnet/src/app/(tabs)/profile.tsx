@@ -7,6 +7,7 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
+  FileText,
   Globe,
   LogOut,
   MapPin,
@@ -14,6 +15,7 @@ import {
   Moon,
   Plus,
   Settings,
+  Shield,
   Sun,
   Trophy,
   CalendarDays,
@@ -38,6 +40,7 @@ import { CreatePostSheet } from '@/components/feed/create-post-sheet';
 import { PostCard, type FeedComment, type FeedPost } from '@/components/feed/post-card';
 import { Avatar } from '@/components/ui/avatar';
 import { Sheet } from '@/components/ui/sheet';
+import { openLegalPage } from '@/constants/legal';
 import { useAuth } from '@/context/auth-context';
 import { useBanner } from '@/context/banner-context';
 import { useLocale } from '@/context/locale-context';
@@ -906,6 +909,19 @@ export default function ProfileScreen() {
               </View>
             </View>
 
+            <View style={[styles.legalSection, { borderTopColor: colors.border }]}>
+              <Pressable onPress={() => openLegalPage('terms')} style={styles.legalRow} accessibilityRole="link">
+                <FileText size={16} color={colors.mutedForeground} />
+                <Text style={[styles.legalText, { color: colors.foreground }]}>{t('settings.terms')}</Text>
+                <ChevronRight size={16} color={colors.mutedForeground} />
+              </Pressable>
+              <Pressable onPress={() => openLegalPage('privacy')} style={styles.legalRow} accessibilityRole="link">
+                <Shield size={16} color={colors.mutedForeground} />
+                <Text style={[styles.legalText, { color: colors.foreground }]}>{t('settings.privacy')}</Text>
+                <ChevronRight size={16} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
             <View style={[styles.deleteSection, { borderTopColor: colors.border }]}>
               {!showDeleteConfirm ? (
                 <Pressable onPress={() => setShowDeleteConfirm(true)}>
@@ -1403,6 +1419,21 @@ const styles = StyleSheet.create({
   },
   readonlyFieldText: {
     fontSize: 13,
+  },
+  legalSection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 8,
+  },
+  legalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 10,
+  },
+  legalText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '500',
   },
   deleteSection: {
     borderTopWidth: StyleSheet.hairlineWidth,
